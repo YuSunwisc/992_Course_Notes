@@ -10,3 +10,6 @@ Thanks for Sijia. And hope Professor Cecile Ane and TA Tzu Hsiang Hung all enjoy
 
 ## Yu Sun 2020.10.01
 I fixed some typos.
+
+## Yu Sun 2020.10.01
+Another conflict trial from Yu Sun
