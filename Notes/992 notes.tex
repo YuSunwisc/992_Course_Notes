@@ -1,0 +1,208 @@
+\documentclass[12pt]{article}
+\usepackage{latexsym,amssymb,amsmath,amsfonts,amsthm,arydshln,calc,comment,hyperref,mathrsfs,placeins,xcolor,graphicx,longtable,bm,cite,blkarray,bbm,dsfont}
+\usepackage[notref,notcite]{showkeys}
+\usepackage{tikz, tikz-cd}
+%\usetikzlibrary{matrix}
+\usetikzlibrary{fit, positioning, arrows}
+\hypersetup{colorlinks=true}
+\usepackage{CJKutf8} %% 中文包
+
+
+\setlength{\textwidth}{6.4in}
+\setlength{\textheight}{8.8in}
+\setlength{\topmargin}{-0.6in}
+\setlength{\oddsidemargin}{.0in}
+\setlength{\evensidemargin}{.0in}
+
+
+%%%%%%%%%%%%%%%%%%%%%% all new theorem def
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{prop}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example} 
+\newtheorem{question}{Question} 
+\newtheorem{problem}{Problem} 
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{append}{Appendix}  %%Yu
+\newtheorem{property}{Property}  %%Yu  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%% labeled equation
+
+\makeatletter
+\newcommand*\@dblLabelI{}
+\newcommand*\@dblLabelII {}
+\newcommand*\@dblequationAux {}
+
+\def\@dblequationAux #1,#2,%
+{\def\@dblLabelI{\label{#1}}\def\@dblLabelII{\label{#2}}}
+
+\newcommand*{\doubleequation}[3][]{%
+	\par\vskip\abovedisplayskip\noindent
+	\if\relax\detokenize{#1}\relax
+	\let\@dblLabelI\@empty
+	\let\@dblLabelII\@empty
+	\else % we assume here that the optional argument
+	% has the required shape A,B
+	\@dblequationAux #1,%
+	\fi
+	\makebox[0.5\linewidth-1.5em]{%
+		\hspace{\stretch2}%
+		\makebox[0pt]{$\displaystyle #2$}%
+		\hspace{\stretch1}%
+	}%
+	\makebox[0.5\linewidth-1.5em]{%
+		\hspace{\stretch1}%
+		\makebox[0pt]{$\displaystyle #3$}%
+		\hspace{\stretch2}%
+	}%
+	\makebox[3em][r]{(%
+		\refstepcounter{equation}\theequation\@dblLabelI, 
+		\refstepcounter{equation}\theequation\@dblLabelII)}%
+	\par\vskip\belowdisplayskip
+}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%% all new equation def
+
+\def\beq{ \begin{equation} }
+\def\eeq{ \end{equation} }
+\newenvironment{seq}{\beq\small}{\eeq} % Small equation (Yu)
+\newenvironment{teq}{\beq\tiny}{\eeq} % Tiny equation (Yu)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% all new skip def
+
+\def\mn{\medskip\noindent}
+\def\ms{\medskip}
+\def\bs{\bigskip}
+\def\bn{\bigskip\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\def\ep{\epsilon}
+\def\nass{\noalign{\smallskip}}
+\def\nams{\noalign{\smallskip}}
+\def\square{\vcenter{\vbox{\hrule height .4pt
+			\hbox{\vrule width .4pt height 5pt \kern 5pt
+				\vrule width .4pt} \hrule height .4pt}}}
+\def\eopt{\hfill$\square$}
+\def\RR{\mathbb{R}}
+\def\ZZ{\mathbb{Z}}
+\def\eqd{\,{\buildrel d \over =}\,}
+\def\var{\hbox{var}\,}
+\def\hbr{\hfill\break}
+
+\def\P{{\mathbb P}}     % Probability (Louis)
+\def\E{{\mathbb E}}     % Expectation (Louis)
+\def\Var{{\mathbb Var}} % Variance (Yu)
+\def\<{{\langle}} %Louis
+\def\>{{\rangle}} %Louis
+\def\=d{{\stackrel{d}{=}}}  % Yu: same in distribution
+\newenvironment{pf}{\noindent\emph{Proof \,}}{\mbox{}\qed} % Louis
+%\newcommand\=d{\stackrel{\mathclap{\normalfont\mbox{d}}}{=}}  
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\def\d{\text{d}}   %derivative   
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% new fucntion & distributions
+
+\def\B{\mathop{\mathrm{B}}}		% Beta function
+\def\Ga{\mathop{\mathrm{Ga}}}   % Ga distribution
+\def\Be{\mathop{\mathrm{Be}}}	% Beta distribution
+
+%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% booktab, have no vertical lines
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+\usepackage[skip=0.5\baselineskip]{caption}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+\begin{document}
+	\title{2020 Fall 992 notes}
+	\author{Yu Sun}
+	
+	
+	\date{\today}
+	\maketitle
+	\vspace{-1em}
+	
+
+	
+	\newpage
+
+	\begin{CJK}{UTF8}{gbsn}
+		\section{Fundamental about Shell}
+		Shell 是 Unix 模块下通过UI与Core 沟通的管道，Terminal是实现Shell功能的输入/输出环境。等价描述为Shell是对Core和其他程序借用Terminal调用的编译器。Shell 语言的基本思想为：
+		\begin{itemize}
+			\item 语言构成: 指令+指令描述+指令对象
+			\item 语言操作位置： 根据当前所在文件夹位置为出发点进行所有操作。如涉及跨文件夹指令操作，也要根据所调用命令保存文件的文件夹为出发点进行操作，而非Terminal所在编译位置为起点。
+
+		\end{itemize}
+	
+	
+		\subsection{对文件夹的操作}
+		
+		\subsection{对文件的操作}
+		\subsubsection{Grep\&Find}
+		
+		\subsection{简单语句}
+		\subsubsection{Loops}
+		
+		\subsection{Terminal指令}
+	
+	
+	\section{参考链接}
+	\noindent [1] \href{http://cecileane.github.io/computingtools/}{Professor Ane gitHub about 992}.\
+	
+	\noindent [2] \href{http://swcarpentry.github.io/shell-novice/}{The Unix Shell 101}.
+	\end{CJK}
+	
+	
+
+	
+	
+	
+	
+	
+	
+
+		
+	
+%	\bibliographystyle{plain}
+	\bibliography{bibliography.bib}
+	
+	
+\end{document}
